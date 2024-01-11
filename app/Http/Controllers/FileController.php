@@ -122,6 +122,15 @@ class FileController extends Controller
      */
     public function destroy(File $file)
     {
-        //
+        if ($file->mimetype == 'dir' && File::where('parent_dir', $file->id)->exists()) {
+            abort(403);
+        }
+
+        $parentDir = File::where('id', $file->parent_dir)->first();
+
+        Storage::delete($file->filepath);
+        File::where('id', $file->id)->delete();
+
+        return redirect()->route('files.show', $parentDir->id);
     }
 }

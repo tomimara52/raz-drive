@@ -1,4 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import DeleteFileButton from '@/Components/DeleteFileButton';
 import { Head, Link } from '@inertiajs/react';
 
 export default function Show({ auth, file, content }) {
@@ -42,6 +43,7 @@ export default function Show({ auth, file, content }) {
                     >
                         Back
                     </Link>
+                    <DeleteFileButton fileId={file.id} />
                 <p><b>File type:</b> {file.mimetype}</p>
             </div>
                 {getFileDisplayer()}
