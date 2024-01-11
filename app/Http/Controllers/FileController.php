@@ -29,7 +29,8 @@ class FileController extends Controller
         abort_if($dir->mimetype != 'dir', 404);
 
         return Inertia::render('Files/FileForm', [
-            'dir' => $dir
+            'dir' => $dir,
+            'warn' => false
         ]);
     }
 
@@ -49,13 +50,12 @@ class FileController extends Controller
 
         $fileExists = !File::where('filepath', $newFilePath)->get()->isEmpty();
 
-        if (!$request->warned && $fileExists) {
-            //return back()->with(['warned' => true ]);//->withErrors(['warning' => 'The file ' . $newFilePath . ' already exists. Do you want to override it?']);
+        if (!$request->acceptedRisk && $fileExists) {
             return Inertia::render('Files/FileForm', [
                 'dir' => $dir,
                 'warn' => true
             ]);
-        } else if ($request->warned && $fileExists) {
+        } else if ($request->acceptedRisk && $fileExists) {
             File::where('filepath', $newFilePath)->delete();
         }
 

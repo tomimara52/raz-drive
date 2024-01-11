@@ -4,29 +4,37 @@ import TextInput from '@/Components/TextInput';
 import PrimaryButton from '@/Components/PrimaryButton';
 import InputError from '@/Components/InputError';
 import { Head, useForm } from '@inertiajs/react';
+import { useEffect } from 'react';
 
-export default function Dir({ auth, dir, warn }) {
+export default function FileForm({ auth, dir, warn }) {
     const { data, setData, post, processing, progress, errors, clearErrors, reset } = useForm('File/Create', {
         filename: '',
         file: null,
-        warned: false
+        acceptedRisk: false
     });
 
+    useEffect(() => {
+        if (data.acceptedRisk) {
+            post(route('files.store', dir.id));
+        }
+    }, [ data.acceptedRisk ]);
 
     function submit(e) {
         e.preventDefault()
 
-        post(route('files.store', dir.id));
+        post(route('files.store', dir.id), {
+            preserveScroll: true
+        });
     };
 
     const handleButtonNo = () => {
-        reset();
         clearErrors();
+        reset('filename');
     }
 
     const handleButtonYes = () => {
         clearErrors();
-        setData('warned', true);
+        setData('acceptedRisk', true);
     }
     
     return (
@@ -36,7 +44,7 @@ export default function Dir({ auth, dir, warn }) {
         >
             <Head title="New file " />
             <div className="flex justify-center m-7">
-                <form onSubmit={submit} className="rounded bg-gray-200 py-2 px-4">
+                <form onSubmit={submit} className="rounded bg-gray-200 py-2 px-4 max-w-min">
                     <div className="my-4">
                         <InputLabel htmlFor="filename">Filename: </InputLabel>
                         <TextInput
@@ -54,17 +62,19 @@ export default function Dir({ auth, dir, warn }) {
                             onChange={e => setData('file', e.target.files[0])}
                             className="block font-medium text-sm text-gray-700"
                         />
-                        {progress && (
+                        {progress && (!warn || data.acceptedRisk) && (
                             <progress value={progress.percentage} max="100">
                                 {progress.percentage}%
                             </progress>
                         )}
                         <InputError message={errors.file}></InputError>
                     </div>
-                    { (warn && !data.warned) ? <>
-                        <p className="text-md text-red-600">There already exists a file with that name. Do you want to override it?</p>
-                        <PrimaryButton onClick={handleButtonYes}>Yes</PrimaryButton>
-                        <PrimaryButton onClick={handleButtonNo}>No</PrimaryButton>
+                    { (warn && !data.acceptedRisk) ? <>
+                        <p className="text-sm text-red-600 text-center">There already exists a file with that name. Do you want to overwrite it?</p> 
+                        <div className="flex justify-between m-2">
+                            <PrimaryButton onClick={handleButtonYes}>Yes</PrimaryButton>
+                            <PrimaryButton onClick={handleButtonNo}>No</PrimaryButton>
+                        </div>
                     </>
                       :
                         <PrimaryButton type="submit" disabled={processing}>Submit</PrimaryButton>
