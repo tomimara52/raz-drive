@@ -3,7 +3,7 @@ import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import PrimaryButton from '@/Components/PrimaryButton';
 import InputError from '@/Components/InputError';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, Link } from '@inertiajs/react';
 import { useEffect } from 'react';
 
 export default function FileForm({ auth, dir, warn }) {
@@ -43,8 +43,14 @@ export default function FileForm({ auth, dir, warn }) {
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">New file at {dir.filepath}</h2>}
         >
             <Head title="New file " />
-            <div className="flex justify-center m-7">
-                <form onSubmit={submit} className="rounded bg-gray-200 py-2 px-4 max-w-min">
+            <div className="pt-8 px-16">
+                <Link
+                    className="bg-slate-300 border border-blue-500 rounded text-cyan-700 p-2 hover:border-transparent hover:bg-gray-700 hover:text-white"
+                    href={route('files.show', dir.id)} 
+                >
+                    Go back
+                </Link>
+                <form onSubmit={submit} className="rounded bg-gray-200 py-2 px-4 max-w-min m-auto">
                     <div className="my-4">
                         <InputLabel htmlFor="filename">Filename: </InputLabel>
                         <TextInput
@@ -80,7 +86,7 @@ export default function FileForm({ auth, dir, warn }) {
                         <PrimaryButton type="submit" disabled={processing}>Submit</PrimaryButton>
                     }
                 </form>
-            </div>
+                </div>
         </AuthenticatedLayout>
     );
 }

@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Link, Head } from '@inertiajs/react';
 
-export default function Dir({ auth, parentDirId, files }) {
+export default function Dir({ auth, dirId, parentDirId, files }) {
     const createFileLink = (file, index) => {
         let filename = file.filepath.split('/').at(-1);
         let svg;
@@ -42,7 +42,7 @@ export default function Dir({ auth, parentDirId, files }) {
             <Head title="Your files " />
             <div className="flex items-center justify-between flex-col p-4 h-auto">
                 <p>Hi {auth.user.name}.</p>
-                <div className="flex justify-around bg-gray-200 w-11/12 p-4 rounded-md m-2">
+                <div className="flex flex-wrap gap-4 bg-gray-200 w-11/12 p-4 rounded-md m-2">
                     { parentDirId != 0 &&
                         <Link
                             className="bg-slate-300 border border-blue-500 rounded text-cyan-700 p-2 flex flex-col items-center hover:border-transparent hover:bg-gray-700 hover:text-white"
@@ -58,6 +58,13 @@ export default function Dir({ auth, parentDirId, files }) {
                         files.map(createFileLink)
                     }
                 </div>
+                <Link
+                    className="bg-green-200 border border-green-500 rounded text-green-700 p-2 hover:border-transparent hover:bg-green-800 hover:text-white"
+                    href={route('files.create', dirId)} 
+                >
+                    Add file
+                </Link>
+
             </div>
         </AuthenticatedLayout>
     );

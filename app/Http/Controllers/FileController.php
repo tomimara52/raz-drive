@@ -17,6 +17,7 @@ class FileController extends Controller
     {
         return Inertia::render('Files/Dir', [
             'files' => File::where('parent_dir', 1)->get(),
+            'dirId' => 1,
             'parentDirId' => 0
         ]);
     }
@@ -84,6 +85,7 @@ class FileController extends Controller
         } else if ($file->mimetype == 'dir') {
             return Inertia::render('Files/Dir', [
                 'files' => File::where('parent_dir', $file->id)->get(),
+                'dirId' => $file->id,
                 'parentDirId' => $file->parent_dir
             ]);
         }
