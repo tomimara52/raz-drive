@@ -24,17 +24,52 @@ class FileController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(File $dir)
     {
-        //
+        abort_if($dir->mimetype != 'dir', 404);
+
+        return Inertia::render('Files/FileForm', [
+            'dir' => $dir
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, File $dir)
     {
-        //
+        abort_if($dir->mimetype != 'dir', 404);
+
+        $request->validate([
+            'filename' => 'required',
+            'file' => 'required'
+        ]);
+
+        $newFilePath = $dir->filepath . ($dir->id == 1 ? '' : '/') . $request->filename;
+
+        $fileExists = !File::where('filepath', $newFilePath)->get()->isEmpty();
+
+        if (!$request->warned && $fileExists) {
+            //return back()->with(['warned' => true ]);//->withErrors(['warning' => 'The file ' . $newFilePath . ' already exists. Do you want to override it?']);
+            return Inertia::render('Files/FileForm', [
+                'dir' => $dir,
+                'warn' => true
+            ]);
+        } else if ($request->warned && $fileExists) {
+            File::where('filepath', $newFilePath)->delete();
+        }
+
+        File::create([
+            'filepath' => $newFilePath,
+            'parent_dir' => $dir->id,
+            'size' => $request->file->getSize(),
+            'mimetype' => $request->file->getMimeType()
+        ]);
+            
+
+        Storage::putFileAs($dir->filepath, $request->file('file'), $request->filename);
+
+        return redirect()->route('files.show', $dir->id);
     }
 
     /**

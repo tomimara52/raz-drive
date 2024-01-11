@@ -24,8 +24,12 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
 
     Route::get('/', [FileController::class, 'index'])->name('files.all');
+
     Route::redirect('/file/1', '/');
     Route::get('/file/{file}', [FileController::class, 'show'])->name('files.show');
+
+    Route::get('/file/{dir}/new-file', [FileController::class, 'create'])->name('files.create');
+    Route::post('/file/{dir}/new-file', [FileController::class, 'store'])->name('files.store');
 
     Route::get('/storage/{file}', [FileController::class, 'raw'])->name('files.raw');
 

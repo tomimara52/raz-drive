@@ -67,7 +67,7 @@ class FileSeeder extends Seeder
             DB::table('files')->insert([
                 'parent_dir' => $testDirId,
                 'filepath' => '/test-dir/hola.txt',
-                'size' => 10,
+                'size' => 16,
                 'mimetype' => 'text/plain',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
@@ -78,7 +78,7 @@ class FileSeeder extends Seeder
             DB::table('files')->insert([
                 'parent_dir' => $testDirId,
                 'filepath' => '/test-dir/hola.txt',
-                'size' => 10,
+                'size' => 16,
                 'mimetype' => 'text/plain',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
