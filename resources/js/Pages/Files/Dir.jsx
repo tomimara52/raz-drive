@@ -90,7 +90,7 @@ export default function Dir({ auth, dirId, parentDirId, files, errors }) {
                   : <p>Hi {auth.user.name}.</p>
                 }
                 <div className={ (deleteMode ? "bg-red-200" : "bg-gray-200") + " flex flex-wrap gap-4 w-11/12 p-4 rounded-md m-2" }>
-                    { parentDirId != 0 &&
+                    { parentDirId != 0 && !deleteMode &&
                         <Link
                             className="bg-slate-300 border border-blue-500 rounded text-cyan-700 p-2 flex flex-col items-center hover:border-transparent hover:bg-gray-700 hover:text-white"
                             href={route('files.show', parentDirId)} key="0"
