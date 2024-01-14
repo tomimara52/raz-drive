@@ -133,4 +133,11 @@ class FileController extends Controller
 
         return redirect()->route('files.show', $parentDir->id);
     }
+
+    public function massDestroy(Request $request)
+    {
+        File::whereIn('id', $request->data['files'])->where('mimetype', '<>', 'dir')->delete();
+
+        return redirect()->route('files.show', $request->data['dirId']);
+    }
 }

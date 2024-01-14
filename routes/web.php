@@ -33,6 +33,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/file/{file}/delete', [FileController::class, 'destroy'])->name('files.destroy');
 
+    Route::post('/destroy', [FileController::class, 'massDestroy'])->name('files.massDestroy');
+
     Route::get('/storage/{file}', [FileController::class, 'raw'])->name('files.raw');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

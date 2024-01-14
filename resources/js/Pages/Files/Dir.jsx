@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Link, Head } from '@inertiajs/react';
+import { Link, Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function Dir({ auth, dirId, parentDirId, files }) {
@@ -18,6 +18,12 @@ export default function Dir({ auth, dirId, parentDirId, files }) {
         if (deleteMode) {
             setDeleteMode(false);
             setToDeleteFiles([]);
+            router.post(route('files.massDestroy'), {
+                data: {
+                    dirId: dirId,
+                    files: toDeleteFiles
+                }
+            });
         } else {
             setDeleteMode(true);
         }
@@ -109,7 +115,7 @@ export default function Dir({ auth, dirId, parentDirId, files }) {
                         className="mx-1 bg-red-300 border border-red-500 rounded text-red-700 p-2 hover:border-transparent hover:bg-gray-700 hover:text-white"
                         onClick={handleDeleteButton}
                     >
-                        Delete files
+                        { deleteMode ? "Confirm delete" : "Delete files" }
                     </button>
                 </div>
 
