@@ -20,7 +20,6 @@ export default function Dir({ auth, dirId, parentDirId, files }) {
             setToDeleteFiles([]);
             router.post(route('files.massDestroy'), {
                 data: {
-                    dirId: dirId,
                     files: toDeleteFiles
                 }
             });

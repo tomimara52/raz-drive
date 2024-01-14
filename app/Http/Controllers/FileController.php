@@ -136,8 +136,16 @@ class FileController extends Controller
 
     public function massDestroy(Request $request)
     {
-        File::whereIn('id', $request->data['files'])->where('mimetype', '<>', 'dir')->delete();
+        $filesSelected = File::whereIn('id', $request->data['files'])->get();
+        $dirsPresent = !$filesSelected->where('mimetype', 'dir')->isEmpty();
+        
+        foreach ($filesSelected as $file) {
+            if ($file->mimetype != 'dir') {
+                Storage::delete($file->filepath);
+                $file->delete();
+            }
+        }
 
-        return redirect()->route('files.show', $request->data['dirId']);
+        return back();
     }
 }
