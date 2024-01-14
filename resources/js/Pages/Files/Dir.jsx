@@ -1,7 +1,28 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Link, Head } from '@inertiajs/react';
+import { useState } from 'react';
 
 export default function Dir({ auth, dirId, parentDirId, files }) {
+    const [ deleteMode, setDeleteMode ] = useState(false);
+    const [ toDeleteFiles, setToDeleteFiles ] = useState([]);
+
+    const handleFileDeleteButton = (fileId, fileSelectedToDelete) => {
+        if (fileSelectedToDelete) {
+            setToDeleteFiles(toDeleteFiles.filter((id) => id !== fileId));
+        } else {
+            setToDeleteFiles([ ...toDeleteFiles, fileId ]);
+        }
+    }
+
+    const handleDeleteButton = () => {
+        if (deleteMode) {
+            setDeleteMode(false);
+            setToDeleteFiles([]);
+        } else {
+            setDeleteMode(true);
+        }
+    }
+    
     const createFileLink = (file, index) => {
         let filename = file.filepath.split('/').at(-1);
         let svg;
@@ -22,6 +43,21 @@ export default function Dir({ auth, dirId, parentDirId, files }) {
               <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v8l-2.083-2.083a.5.5 0 0 0-.76.063L8 11 5.835 9.7a.5.5 0 0 0-.611.076L3 12z"/>
           </svg>
         }
+
+        if (deleteMode) {
+            const fileSelectedToDelete = toDeleteFiles.includes(file.id);
+            const color = fileSelectedToDelete ? "border-red-500 text-red-700 bg-gray-300" : "border-blue-500 text-cyan-700 bg-slate-300";
+            return (
+                <button
+                    className={ color + " border rounded p-2 flex flex-col items-center hover:border-transparent hover:bg-gray-700 hover:text-white" }
+                    onClick={() => handleFileDeleteButton(file.id, fileSelectedToDelete)}
+                    key={index+1}
+                >
+                    {svg}
+                    {filename}
+                </button>
+            );
+        }
         
         return (
             <Link
@@ -41,8 +77,11 @@ export default function Dir({ auth, dirId, parentDirId, files }) {
         >
             <Head title="Your files " />
             <div className="flex items-center justify-between flex-col p-4 h-auto">
-                <p>Hi {auth.user.name}.</p>
-                <div className="flex flex-wrap gap-4 bg-gray-200 w-11/12 p-4 rounded-md m-2">
+                { deleteMode
+                  ? <p>Select the files you want to delete.</p>
+                  : <p>Hi {auth.user.name}.</p>
+                }
+                <div className={ (deleteMode ? "bg-red-200" : "bg-gray-200") + " flex flex-wrap gap-4 w-11/12 p-4 rounded-md m-2" }>
                     { parentDirId != 0 &&
                         <Link
                             className="bg-slate-300 border border-blue-500 rounded text-cyan-700 p-2 flex flex-col items-center hover:border-transparent hover:bg-gray-700 hover:text-white"
@@ -58,12 +97,21 @@ export default function Dir({ auth, dirId, parentDirId, files }) {
                         files.map(createFileLink)
                     }
                 </div>
-                <Link
-                    className="bg-green-200 border border-green-500 rounded text-green-700 p-2 hover:border-transparent hover:bg-green-800 hover:text-white"
-                    href={route('files.create', dirId)} 
-                >
-                    Add file
-                </Link>
+                <div className="flex wrap">
+                    <Link
+                        className="mx-1 bg-green-200 border border-green-500 rounded text-green-700 p-2 hover:border-transparent hover:bg-green-800 hover:text-white"
+                        href={route('files.create', dirId)} 
+                    >
+                        Add file
+                    </Link>
+
+                    <button
+                        className="mx-1 bg-red-300 border border-red-500 rounded text-red-700 p-2 hover:border-transparent hover:bg-gray-700 hover:text-white"
+                        onClick={handleDeleteButton}
+                    >
+                        Delete files
+                    </button>
+                </div>
 
             </div>
         </AuthenticatedLayout>
