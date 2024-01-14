@@ -1,10 +1,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Link, Head, router } from '@inertiajs/react';
+import { Link, Head, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
-export default function Dir({ auth, dirId, parentDirId, files }) {
+export default function Dir({ auth, dirId, parentDirId, files, errors }) {
     const [ deleteMode, setDeleteMode ] = useState(false);
     const [ toDeleteFiles, setToDeleteFiles ] = useState([]);
+
+    const { flash } = usePage().props;
 
     const handleFileDeleteButton = (fileId, fileSelectedToDelete) => {
         if (fileSelectedToDelete) {
@@ -20,6 +22,7 @@ export default function Dir({ auth, dirId, parentDirId, files }) {
             setToDeleteFiles([]);
             router.post(route('files.massDestroy'), {
                 data: {
+                    dirId: dirId,
                     files: toDeleteFiles
                 }
             });
@@ -74,7 +77,7 @@ export default function Dir({ auth, dirId, parentDirId, files }) {
             </Link>
         );
     };
-    
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -117,6 +120,11 @@ export default function Dir({ auth, dirId, parentDirId, files }) {
                         { deleteMode ? "Confirm delete" : "Delete files" }
                     </button>
                 </div>
+                { flash.error &&
+                <p className="text-sm text-red-700">
+                    {flash.error}
+                </p>
+                }
 
             </div>
         </AuthenticatedLayout>

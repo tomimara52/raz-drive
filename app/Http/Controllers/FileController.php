@@ -146,6 +146,18 @@ class FileController extends Controller
             }
         }
 
-        return back();
+        $dirId = $request->data['dirId'];
+
+        if ($dirsPresent) {
+            $errorMsg = 'You can\'t delete directories this way. To do that, empty it and delete it in its view.';
+
+            if ($dirId == 1) {
+                return redirect()->route('files.all')->with('error', $errorMsg);
+            } 
+
+            return redirect()->route('files.show', $dirId)->with('error', $errorMsg );
+        }
+
+        return redirect()->route('files.show', $dirId);
     }
 }
