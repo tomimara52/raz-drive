@@ -46,7 +46,7 @@ class FileSeeder extends Seeder
             ]);
         }
 
-        $testDir = DB::table('files')->where('filepath', '/test-dir/')->first();
+        $testDir = DB::table('files')->where('filepath', '/test-dir')->first();
 
         if (is_null($testDir)) {
             $testDirId = DB::table('files')->insertGetId([
