@@ -50,7 +50,7 @@ export default function Show({ auth, file, content }) {
                     fileName={file.filepath.split('/').at(-1)}
                     fileId={file.id}
                     className="flex justify-end"
-                    buttonClassName="bg-red-300 border border-red-500 rounded-sm p-2 text-red-700 hover:border-transparent hover:bg-gray-700 hover:text-white"
+                    buttonClassName="bg-red-500 border border-red-500 rounded-sm p-2 text-red-700 hover:border-transparent hover:bg-gray-700 hover:text-white"
                 />
             </div>
             {getFileDisplayer()}
