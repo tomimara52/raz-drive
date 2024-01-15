@@ -1,12 +1,37 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Link, Head, router, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function Dir({ auth, dirId, parentDirId, files, errors }) {
+export default function Dir({ auth, dirId, parentDirId, files }) {
     const [ deleteMode, setDeleteMode ] = useState(false);
     const [ toDeleteFiles, setToDeleteFiles ] = useState([]);
 
     const { flash } = usePage().props;
+
+    const errorText = document.querySelector('#error-text');
+
+    const animateErrorText = () => {
+        if (flash.error) {
+            errorText.animate(
+                [
+                    { opacity: '0' },
+                    { opacity: '1' },
+                    { opacity: '1' },
+                    { opacity: '1' },
+                    { opacity: '0' },
+                ],
+                {
+                    duration: 2500,
+                    iterations: 1,
+                    easing: 'linear'
+                }
+            );
+        }
+    };
+
+    useEffect(() => {
+        animateErrorText();
+    }, [ flash.error ]);
 
     const handleFileDeleteButton = (fileId, fileSelectedToDelete) => {
         if (fileSelectedToDelete) {
@@ -26,6 +51,7 @@ export default function Dir({ auth, dirId, parentDirId, files, errors }) {
                     files: toDeleteFiles
                 }
             });
+            animateErrorText();
         } else {
             setDeleteMode(true);
         }
@@ -120,11 +146,7 @@ export default function Dir({ auth, dirId, parentDirId, files, errors }) {
                         { deleteMode ? "Confirm delete" : "Delete files" }
                     </button>
                 </div>
-                { flash.error &&
-                <p className="text-sm text-red-700">
-                    {flash.error}
-                </p>
-                }
+                <p id="error-text" className="text-sm text-red-700" style={{ opacity: 0 }}>{flash.error}</p>
 
             </div>
         </AuthenticatedLayout>
