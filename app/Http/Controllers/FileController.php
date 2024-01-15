@@ -73,6 +73,37 @@ class FileController extends Controller
         return redirect()->route('files.show', $dir->id);
     }
 
+    public function createDir(File $dir)
+    {
+        abort_if($dir->mimetype != 'dir', 404);
+
+        return Inertia::render('Files/DirForm', [
+            'dir' => $dir
+        ]);
+    }
+
+    public function storeDir(Request $request, File $dir)
+    {
+        abort_if($dir->mimetype != 'dir', 404);
+
+        $request->validate([
+            'dirname' => 'required'
+        ]);
+
+        $newDirPath = $dir->filepath . ($dir->id == 1 ? '' : '/') . $request->dirname;
+
+        Storage::makeDirectory($newDirPath);
+
+        File::create([
+            'filepath' => $newDirPath,
+            'parent_dir' => $dir->id,
+            'size' => 4096,
+            'mimetype' => 'dir'
+        ]);
+
+        return redirect()->route('files.show', $dir->id);
+    }
+
     /**
      * Display the specified resource.
      */

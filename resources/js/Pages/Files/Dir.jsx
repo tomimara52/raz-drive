@@ -138,6 +138,12 @@ export default function Dir({ auth, dirId, parentDirId, files }) {
                     >
                         Add file
                     </Link>
+                    <Link
+                        className="mx-1 bg-blue-200 border border-blue-500 rounded text-blue-700 p-2 hover:border-transparent hover:bg-blue-800 hover:text-white"
+                        href={route('files.createDir', dirId)} 
+                    >
+                        New directory
+                    </Link>
 
                     <button
                         className="mx-1 bg-red-300 border border-red-500 rounded text-red-700 p-2 hover:border-transparent hover:bg-gray-700 hover:text-white"

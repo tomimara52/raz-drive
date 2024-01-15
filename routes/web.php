@@ -31,6 +31,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/file/{dir}/new-file', [FileController::class, 'create'])->name('files.create');
     Route::post('/file/{dir}/new-file', [FileController::class, 'store'])->name('files.store');
 
+    Route::get('/file/{dir}/new-dir', [FileController::class, 'createDir'])->name('files.createDir');
+    Route::post('/file/{dir}/new-dir', [FileController::class, 'storeDir'])->name('files.storeDir');
+
     Route::post('/file/{file}/delete', [FileController::class, 'destroy'])->name('files.destroy');
 
     Route::post('/destroy', [FileController::class, 'massDestroy'])->name('files.massDestroy');
