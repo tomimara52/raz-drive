@@ -3,12 +3,14 @@ import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import PrimaryButton from '@/Components/PrimaryButton';
 import InputError from '@/Components/InputError';
-import { Head, useForm, Link } from '@inertiajs/react';
+import { Head, useForm, Link, usePage } from '@inertiajs/react';
 
 export default function FileForm({ auth, dir }) {
     const { data, setData, post, errors, processing } = useForm('Dir/Create', {
         dirname: '',
     });
+
+    const { flash } = usePage().props;
 
     function submit(e) {
         e.preventDefault();
@@ -41,6 +43,7 @@ export default function FileForm({ auth, dir }) {
                         <InputError message={errors.dirname}></InputError>
                     </div>
                     <PrimaryButton type="submit" disabled={processing}>Submit</PrimaryButton>
+                    <InputError className="mt-2" message={flash.error}></InputError>
                 </form>
             </div>
         </AuthenticatedLayout>

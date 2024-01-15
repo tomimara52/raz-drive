@@ -92,6 +92,14 @@ class FileController extends Controller
 
         $newDirPath = $dir->filepath . ($dir->id == 1 ? '' : '/') . $request->dirname;
 
+        $dirExists = !File::where('filepath', $newDirPath)->get()->isEmpty();
+
+        if ($dirExists) {
+            $errorMsg = 'There already exists a directory with that name.';
+
+            return redirect()->route('files.createDir', $dir->id)->with('error', $errorMsg);
+        }
+
         Storage::makeDirectory($newDirPath);
 
         File::create([
