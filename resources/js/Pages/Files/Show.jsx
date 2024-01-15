@@ -36,7 +36,7 @@ export default function Show({ auth, file, content }) {
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">{file.filepath}</h2>}
         >
             <Head title={file.filepath + ' '} />
-            <div className="p-4 grid items-baseline" style={{gridTemplateColumns: '10% auto 10%'}}>
+            <div className="p-4 grid items-baseline" style={{gridTemplateColumns: '15% auto 10%'}}>
                 <div>
                     <Link
                         className="mr-1 bg-slate-300 border border-blue-500 rounded-sm p-2 text-cyan-700 hover:border-transparent hover:bg-gray-700 hover:text-white"
@@ -44,6 +44,13 @@ export default function Show({ auth, file, content }) {
                     >
                         Back
                     </Link>
+                    <a
+                        className="mr-1 bg-slate-300 border border-orange-500 rounded-sm p-2 text-yellow-700 hover:border-transparent hover:bg-gray-700 hover:text-white"
+                        href={route('files.raw', file.id)}
+                        download={file.filepath.split('/').at(-1)}
+                    >
+                        Download
+                    </a>
                 </div>
                 <p><b>File type:</b> {file.mimetype}</p>
                 <DeleteFileButton
