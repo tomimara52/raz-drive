@@ -137,19 +137,26 @@ class FileController extends Controller
     public function massDestroy(Request $request)
     {
         $filesSelected = File::whereIn('id', $request->data['files'])->get();
-        $dirsPresent = !$filesSelected->where('mimetype', 'dir')->isEmpty();
+        $notEmptyDirs = false;
         
         foreach ($filesSelected as $file) {
             if ($file->mimetype != 'dir') {
                 Storage::delete($file->filepath);
                 $file->delete();
+            } else {
+                if (File::where('parent_dir', $file->id)->get()->isEmpty()) {
+                    Storage::deleteDirectory($file->filepath);
+                    $file->delete();
+                } else {
+                    $notEmptyDirs = true;
+                }
             }
         }
 
         $dirId = $request->data['dirId'];
 
-        if ($dirsPresent) {
-            $errorMsg = 'You can\'t delete directories this way. To do that, empty it and delete it in its view.';
+        if ($notEmptyDirs) {
+            $errorMsg = 'You can\'t delete directories that aren\'t empty.';
 
             if ($dirId == 1) {
                 return redirect()->route('files.all')->with('error', $errorMsg);
