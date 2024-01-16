@@ -123,7 +123,7 @@ class FileController extends Controller
             $content = Storage::get($file->filepath);
         } else if ($file->mimetype == 'dir') {
             return Inertia::render('Files/Dir', [
-                'files' => File::where('parent_dir', $file->id)->get(),
+                'files' => $file->files,
                 'dirId' => $file->id,
                 'parentDirId' => $file->parent_dir
             ]);
@@ -161,11 +161,11 @@ class FileController extends Controller
      */
     public function destroy(File $file)
     {
-        if ($file->mimetype == 'dir' && File::where('parent_dir', $file->id)->exists()) {
+        if ($file->id == 1 || ($file->mimetype == 'dir' && !$file->files->isEmpty())) {
             abort(403);
         }
 
-        $parentDir = File::where('id', $file->parent_dir)->first();
+        $parentDir = $file->parentDir;
 
         Storage::delete($file->filepath);
         File::where('id', $file->id)->delete();
@@ -182,8 +182,8 @@ class FileController extends Controller
             if ($file->mimetype != 'dir') {
                 Storage::delete($file->filepath);
                 $file->delete();
-            } else {
-                if (File::where('parent_dir', $file->id)->get()->isEmpty()) {
+            } else if ($file->id != 1) {
+                if ($file->files->isEmpty()) {
                     Storage::deleteDirectory($file->filepath);
                     $file->delete();
                 } else {
