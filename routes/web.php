@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FileController;
+use App\Models\Log;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,13 +18,15 @@ use Inertia\Inertia;
 */
 
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
 
     Route::get('/', [FileController::class, 'index'])->name('files.all');
+
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard', [
+            'logs' => Log::orderByDesc('created_at')->get()
+        ]);
+    })->name('dashboard');
 
     Route::redirect('/file/1', '/');
     Route::get('/file/{file}', [FileController::class, 'show'])->name('files.show');

@@ -1,7 +1,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
-export default function Dashboard({ auth }) {
+export default function Dashboard({ auth, logs }) {
+
+    const logsMap = logs.map((log, index) => {
+        const date = new Date(log.created_at);
+        return <p key={index}>You {log.type + 'd'} {log.filepath} at {date.toLocaleString()}.</p>;
+    }); 
+    
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -12,7 +18,9 @@ export default function Dashboard({ auth }) {
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900">You're logged in!</div>
+                        <div className="p-6 text-gray-900">
+                            {logsMap}
+                        </div>
                     </div>
                 </div>
             </div>
