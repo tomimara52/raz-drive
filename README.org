@@ -1,0 +1,30 @@
+#+title: raz-drive
+#+author: Tomás Maraschio
+
+* Overview
+  #+html: <p align="center"><video src="./overview.mp4" /></p>
+
+* Description
+  A google-drive-type web application that lets you manage files in a remote storage.
+  Back end in Laravel and connected to the React front end through Inertiajs.
+
+* Installation
+
+  Once downloaded run
+  #+begin_src shell
+    cp .env.example .env
+  #+end_src
+  and configure the database connection.
+  
+  Then
+  #+begin_src shell
+    composer install
+    php artisan migrate
+    php artisan key:generate
+    npm install
+    npm run build
+    php artisan serve
+  #+end_src
+  and go to localhost:8000 to see the webpage.
+
+  Note that there aren't routes to register a user, so you will have to add one manually to the database.
