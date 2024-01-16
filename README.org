@@ -2,7 +2,7 @@
 #+author: Tomás Maraschio
 
 * Overview
-  #+html: <p align="center"><video src="./overview.mp4" /></p>
+  #+html: <p align="center"><video src="./overview.gif" /></p>
 
 * Description
   A google-drive-type web application that lets you manage files in a remote storage.
