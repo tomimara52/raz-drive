@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\File;
+use App\Models\Log;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -60,7 +61,7 @@ class FileController extends Controller
             File::where('filepath', $newFilePath)->delete();
         }
 
-        File::create([
+        $newFile = File::create([
             'filepath' => $newFilePath,
             'parent_dir' => $dir->id,
             'size' => $request->file->getSize(),
@@ -69,6 +70,13 @@ class FileController extends Controller
             
 
         Storage::putFileAs($dir->filepath, $request->file('file'), $request->filename);
+
+
+        Log::create([
+            'file_id' => $newFile->id,
+            'filepath' => $newFile->filepath,
+            'type' => 'create'
+        ]);
 
         return redirect()->route('files.show', $dir->id);
     }
@@ -102,11 +110,17 @@ class FileController extends Controller
 
         Storage::makeDirectory($newDirPath);
 
-        File::create([
+        $newDir = File::create([
             'filepath' => $newDirPath,
             'parent_dir' => $dir->id,
             'size' => 4096,
             'mimetype' => 'dir'
+        ]);
+
+        Log::create([
+            'file_id' => $newDir->id,
+            'filepath' => $newDir->filepath,
+            'type' => 'create'
         ]);
 
         return redirect()->route('files.show', $dir->id);
@@ -167,6 +181,12 @@ class FileController extends Controller
 
         $parentDir = $file->parentDir;
 
+        Log::create([
+            'file_id' => $file->id,
+            'filepath' => $file->filepath,
+            'type' => 'delete'
+        ]);
+
         Storage::delete($file->filepath);
         File::where('id', $file->id)->delete();
 
@@ -180,10 +200,22 @@ class FileController extends Controller
         
         foreach ($filesSelected as $file) {
             if ($file->mimetype != 'dir') {
+                Log::create([
+                    'file_id' => $file->id,
+                    'filepath' => $file->filepath,
+                    'type' => 'delete'
+                ]);
+
                 Storage::delete($file->filepath);
                 $file->delete();
             } else if ($file->id != 1) {
                 if ($file->files->isEmpty()) {
+                    Log::create([
+                        'file_id' => $file->id,
+                        'filepath' => $file->filepath,
+                        'type' => 'delete'
+                    ]);
+
                     Storage::deleteDirectory($file->filepath);
                     $file->delete();
                 } else {

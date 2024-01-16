@@ -10,6 +10,12 @@ class Log extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'file_id',
+        'filepath',
+        'type'
+    ];
+
     public function file(): BelongsTo
     {
         return $this->belongsTo(File::class);
