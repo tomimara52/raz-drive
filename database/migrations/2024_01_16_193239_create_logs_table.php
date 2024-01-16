@@ -14,7 +14,8 @@ return new class extends Migration
     {
         Schema::create('logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(File::class)->constrained()->cascadeOnUpdate();
+            $table->foreignIdFor(File::class)->nullable()->constrained()->cascadeOnUpdate()->nullOnDelete();
+            $table->string('filepath');
             $table->enum('type', ['create', 'update', 'delete']);
             $table->timestamps();
         });
